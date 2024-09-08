@@ -95,9 +95,10 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
         String itemKey = newImage.get("key").getS();
         String modificationTime = java.time.Instant.now().toString();
         String updatedAttribute = "value";  // Assuming "value" attribute changed
-		int oldValue = Integer.parseInt(oldImage.get("value").getN());
-		int newValue = Integer.parseInt(newImage.get("value").getN());
-		
+
+        // Extract the old and new values
+        int oldValue = oldImage != null ? Integer.parseInt(oldImage.get("value").getN()) : 0;
+        int newValue = newImage != null ? Integer.parseInt(newImage.get("value").getN()) : 0;
 
         // Create an audit item for the update
         Table auditTable = dynamoDB.getTable(tableName);
@@ -114,6 +115,20 @@ public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
     }
 
     private Map<String, Object> convertImageToMap(Map<String, AttributeValue> image) {
-        return objectMapper.convertValue(image, Map.class);
+        // Convert AttributeValue map to a standard Map
+        Map<String, Object> result = new HashMap<>();
+        for (Map.Entry<String, AttributeValue> entry : image.entrySet()) {
+            String key = entry.getKey();
+            AttributeValue value = entry.getValue();
+            if (value.getS() != null) {
+                result.put(key, value.getS());
+            } else if (value.getN() != null) {
+                result.put(key, Integer.parseInt(value.getN()));
+            } else if (value.getM() != null) {
+                result.put(key, convertImageToMap(value.getM()));
+            }
+            // Handle other AttributeValue types as necessary
+        }
+        return result;
     }
 }

@@ -14,7 +14,11 @@
             "dynamodb:DeleteItem",
             "ssm:PutParameter",
             "ssm:GetParameter",
-            "kms:Decrypt"
+            "kms:Decrypt",
+            "dynamodb:DescribeStream",
+            "dynamodb:GetRecords",
+            "dynamodb:GetShardIterator",
+            "dynamodb:ListStreams"
           ],
           "Effect": "Allow",
           "Resource": "*"
@@ -41,8 +45,8 @@
     "global_indexes": [],
     "autoscaling": [],
     "stream_specification": {
-      "stream_enabled": true,
-      "stream_view_type": "NEW_AND_OLD_IMAGES"
+      "StreamEnabled": true,
+      "StreamViewType": "NEW_AND_OLD_IMAGES"
     }
   },
   "Audit": {

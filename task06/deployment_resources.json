@@ -10,17 +10,7 @@
             "dynamodb:GetItem",
             "dynamodb:Query",
             "dynamodb:PutItem",
-            "dynamodb:Batch*",
-            "dynamodb:DeleteItem",
-            "ssm:PutParameter",
-            "ssm:GetParameter",
-            "logs:CreateLogGroup",
-            "logs:CreateLogStream",
-            "logs:PutLogEvents",
-            "dynamodb:GetItem",
-            "dynamodb:Query",
-            "dynamodb:PutItem",
-            "dynamodb:Batch*",
+            "dynamodb:BatchWriteItem",
             "dynamodb:DeleteItem",
             "ssm:PutParameter",
             "ssm:GetParameter",
@@ -31,7 +21,12 @@
             "dynamodb:ListStreams"
           ],
           "Effect": "Allow",
-          "Resource": "*"
+          "Resource": [
+            "arn:aws:dynamodb:eu-central-1:905418349556:table/cmtr-3663a088-Configuration-test",
+            "arn:aws:dynamodb:eu-central-1:905418349556:table/Audit",
+            "arn:aws:lambda:eu-central-1:905418349556:function:cmtr-3663a088-audit_producer-test",
+            "*"
+          ]
         }
       ],
       "Version": "2012-10-17"
@@ -53,11 +48,7 @@
     "read_capacity": 1,
     "write_capacity": 1,
     "global_indexes": [],
-    "autoscaling": [],
-    "stream_specification": {
-      "StreamEnabled": true,
-      "StreamViewType": "NEW_AND_OLD_IMAGES"
-    }
+    "autoscaling": []
   },
   "Audit": {
     "resource_type": "dynamodb_table",

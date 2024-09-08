@@ -11,6 +11,7 @@ import com.amazonaws.services.lambda.runtime.events.models.dynamodb.AttributeVal
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariable;
 import com.syndicate.deployment.annotations.environment.EnvironmentVariables;
+import com.syndicate.deployment.annotations.events.DynamoDbTriggerEventSource;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.annotations.resources.DependsOn;
 import com.syndicate.deployment.model.RetentionSetting;
@@ -29,6 +30,7 @@ import java.util.UUID;
 	isPublishVersion = false,
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )
+@DynamoDbTriggerEventSource(targetTable = "Configuration", batchSize = 1)
 @DependsOn(name = "Audit", resourceType = com.syndicate.deployment.model.ResourceType.DYNAMODB_TABLE)
 @EnvironmentVariables(value = {
     @EnvironmentVariable(key = "target_table", value = "${target_table}")
@@ -38,10 +40,12 @@ import java.util.UUID;
 public class AuditProducer implements RequestHandler<DynamodbEvent, Void> {
     private final DynamoDB dynamoDB;
     private final ObjectMapper objectMapper;
+	private final EnableDynamoDBStream streamConfig;
 
     public AuditProducer() {
         this.dynamoDB = new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
         this.objectMapper = new ObjectMapper();
+        this.streamConfig = new EnableDynamoDBStream (); // Initialize configuration
     }
 
     @Override

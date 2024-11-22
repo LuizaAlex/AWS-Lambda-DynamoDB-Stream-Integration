@@ -15,18 +15,7 @@ The DynamoDB Stream to Lambda Audit Function Application is designed to track ch
 
 ---
 
-## Resource Details  
 
-### **DynamoDB Tables**  
-
-#### Configuration Table  
-
-Holds configuration items in the following format:  
-```json  
-{  
-    "key": "string",   // Unique key for the configuration item  
-    "value": "int"     // Configuration value  
-}  
 
 ## App Flow  
 
